@@ -3,7 +3,7 @@ from algoritmos.bully import Bully
 from algoritmos.anillo import Anillo
 
 def ejecutar_bully():
-    print("=== ALGORITMO BULLY ===")
+    print("=== ALGORITMO BULLY (caso simple, sin fallos) ===")
     cantidad_nodos = 6
     red = Red()
     red.crear_red_completa(cantidad_nodos)
@@ -17,7 +17,7 @@ def ejecutar_bully():
     return bully.contador.total_mensajes, bully.contador.pasos
 
 def ejecutar_anillo():
-    print("\n=== ALGORITMO ANILLO ===")
+    print("\n=== ALGORITMO ANILLO (caso simple, sin fallos) ===")
     cantidad_nodos = 6
     red = Red()
     red.crear_red_completa(cantidad_nodos)
@@ -31,13 +31,34 @@ def ejecutar_anillo():
     print(anillo.contador.resumen())
     return anillo.contador.total_mensajes, anillo.contador.pasos
 
+def ejecutar_caso_con_fallo():
+    print("\n=== CASO COMPLEJO: FALLO DE NODO A MITAD DE ELECCION ===")
+
+    print("\n--- Bully con fallo del nodo 6 durante la eleccion ---")
+    red_bully = Red()
+    red_bully.crear_red_completa(6)
+    bully = Bully(red_bully)
+    lider_bully = bully.iniciar_eleccion(1, nodo_que_falla=6)
+    print("Lider elegido (Bully con fallo): " + str(lider_bully))
+    print(bully.contador.resumen())
+
+    print("\n--- Anillo con fallo del nodo 4 en el paso 2 ---")
+    red_anillo = Red()
+    red_anillo.crear_red_completa(6)
+    anillo = Anillo(red_anillo, [1, 2, 3, 4, 5, 6])
+    lider_anillo = anillo.iniciar_eleccion(1, nodo_que_falla=4, paso_de_falla=2)
+    print("Lider elegido (Anillo con fallo): " + str(lider_anillo))
+    print(anillo.contador.resumen())
+
 def main():
     mensajes_bully, pasos_bully = ejecutar_bully()
     mensajes_anillo, pasos_anillo = ejecutar_anillo()
 
-    print("\n=== COMPARACION ===")
+    print("\n=== COMPARACION (caso simple) ===")
     print("Bully  -> mensajes: " + str(mensajes_bully) + ", pasos: " + str(pasos_bully))
     print("Anillo -> mensajes: " + str(mensajes_anillo) + ", pasos: " + str(pasos_anillo))
+
+    ejecutar_caso_con_fallo()
 
 if __name__ == "__main__":
     main()
