@@ -79,6 +79,25 @@ class TestAnillo(unittest.TestCase):
         anillo.iniciar_eleccion(1)
         self.assertGreater(anillo.contador.total_mensajes, 0)
         self.assertGreater(anillo.contador.pasos, 0)
+class TestFallosMidElection(unittest.TestCase):
+
+    def test_bully_salta_al_nodo_que_falla(self):
+        red = Red()
+        red.crear_red_completa(6)
+        bully = Bully(red)
+        # El nodo 6 (el mayor) falla justo al recibir el mensaje de eleccion
+        lider = bully.iniciar_eleccion(1, nodo_que_falla=6)
+        self.assertEqual(lider, 5)
+        self.assertFalse(red.nodos[6].activo)
+
+    def test_anillo_salta_al_nodo_que_falla(self):
+        red = Red()
+        red.crear_red_completa(6)
+        anillo = Anillo(red, [1, 2, 3, 4, 5, 6])
+        # El nodo 4 falla en el segundo paso del recorrido
+        lider = anillo.iniciar_eleccion(1, nodo_que_falla=4, paso_de_falla=2)
+        self.assertEqual(lider, 6)
+        self.assertFalse(red.nodos[4].activo)
 
 if __name__ == "__main__":
     unittest.main()

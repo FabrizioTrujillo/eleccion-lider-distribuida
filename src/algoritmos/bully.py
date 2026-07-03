@@ -5,27 +5,35 @@ class Bully:
         self.red = red
         self.contador = ContadorMensajes()
 
-    def iniciar_eleccion(self, id_iniciador):
+    def iniciar_eleccion(self, id_iniciador, nodo_que_falla=None):
         print("Nodo " + str(id_iniciador) + " inicia la eleccion")
         self.contador.nuevo_paso()
 
-        # Buscar vecinos activos con id mayor
-        candidatos_mayores = []
+        vecinos_mayores = []
         for id_vecino in self.red.nodos[id_iniciador].vecinos:
             nodo_vecino = self.red.nodos[id_vecino]
             if nodo_vecino.activo and id_vecino > id_iniciador:
-                candidatos_mayores.append(id_vecino)
-                self.contador.registrar_mensaje(id_iniciador, id_vecino, "ELECCION")
+                vecinos_mayores.append(id_vecino)
 
-        if len(candidatos_mayores) == 0:
-            # No hay nadie mayor activo: este nodo se declara lider
+        vecinos_mayores.sort(reverse=True)
+
+        candidatos_validos = []
+        for id_vecino in vecinos_mayores:
+            self.contador.registrar_mensaje(id_iniciador, id_vecino, "ELECCION")
+
+            if id_vecino == nodo_que_falla:
+                print("Nodo " + str(id_vecino) + " recibe el mensaje y falla antes de responder")
+                self.red.desactivar_nodo(id_vecino)
+                continue
+
+            candidatos_validos.append(id_vecino)
+
+        if len(candidatos_validos) == 0:
             return self._declarar_lider(id_iniciador)
         else:
-            # Simulamos que el nodo mayor entre los candidatos responde
-            # y continua la eleccion desde ahi
-            siguiente = max(candidatos_mayores)
+            siguiente = max(candidatos_validos)
             self.contador.registrar_mensaje(siguiente, id_iniciador, "OK")
-            return self.iniciar_eleccion(siguiente)
+            return self.iniciar_eleccion(siguiente, nodo_que_falla)
 
     def _declarar_lider(self, id_lider):
         self.red.nodos[id_lider].es_lider = True

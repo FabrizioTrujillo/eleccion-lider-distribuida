@@ -94,12 +94,12 @@ Este script ejecuta ambos algoritmos con redes de 5, 10, 15, 20, 30 y 50 nodos (
 Resultado verificado en ejecución real (n=5 hasta n=50):
 
 | tamaño_red | mensajes_bully | pasos_bully | mensajes_anillo | pasos_anillo |
-|---|---|---|---|---|
-| 5 | 9 | 3 | 10 | 10 |
-| 10 | 19 | 3 | 20 | 20 |
-| 15 | 29 | 3 | 30 | 30 |
-| 20 | 39 | 3 | 40 | 40 |
-| 30 | 59 | 3 | 60 | 60 |
+|--- |--- |---|---  |---  |
+| 5  | 9  | 3 | 10  | 10  |
+| 10 | 19 | 3 | 20  | 20  |
+| 15 | 29 | 3 | 30  | 30  |
+| 20 | 39 | 3 | 40  | 40  |
+| 30 | 59 | 3 | 60  | 60  |
 | 50 | 99 | 3 | 100 | 100 |
 
 **Nota sobre complejidad:** en esta implementación específica (red completa, sin nodos desactivados), Bully genera `2n-1` mensajes y Anillo genera `2n` mensajes — ambos con crecimiento lineal O(n) respecto al número de nodos. Esto se debe a que el nodo iniciador contacta directamente al vecino de mayor id en una red completa, a diferencia del algoritmo Bully clásico teórico (García-Molina, 1982), donde cada nodo intermedio puede reiniciar su propia sub-elección, lo cual puede producir hasta O(n²) mensajes en el peor caso. Esta diferencia entre la cota teórica y el comportamiento medido debe explicarse en el informe técnico.

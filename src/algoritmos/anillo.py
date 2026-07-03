@@ -2,7 +2,6 @@ from utilidades.contador_mensajes import ContadorMensajes
 
 class Anillo:
     def __init__(self, red, orden):
-        # orden: lista con el orden logico del anillo, ej. [1,2,3,4,5,6]
         self.red = red
         self.orden = orden
         self.contador = ContadorMensajes()
@@ -16,12 +15,18 @@ class Anillo:
                 return candidato
         return id_actual
 
-    def iniciar_eleccion(self, id_iniciador):
+    def iniciar_eleccion(self, id_iniciador, nodo_que_falla=None, paso_de_falla=None):
         print("Nodo " + str(id_iniciador) + " inicia la eleccion en anillo")
         actual = id_iniciador
         maximo = id_iniciador
-        siguiente = self._siguiente_activo(actual)
+        paso_actual = 0
 
+        paso_actual += 1
+        if nodo_que_falla is not None and paso_actual == paso_de_falla:
+            print("Nodo " + str(nodo_que_falla) + " falla en el paso " + str(paso_actual))
+            self.red.desactivar_nodo(nodo_que_falla)
+
+        siguiente = self._siguiente_activo(actual)
         self.contador.nuevo_paso()
         self.contador.registrar_mensaje(actual, siguiente, "ELECCION(" + str(maximo) + ")")
 
@@ -29,6 +34,12 @@ class Anillo:
             if siguiente > maximo:
                 maximo = siguiente
             actual = siguiente
+            paso_actual += 1
+
+            if nodo_que_falla is not None and paso_actual == paso_de_falla:
+                print("Nodo " + str(nodo_que_falla) + " falla en el paso " + str(paso_actual))
+                self.red.desactivar_nodo(nodo_que_falla)
+
             siguiente = self._siguiente_activo(actual)
             self.contador.nuevo_paso()
             self.contador.registrar_mensaje(actual, siguiente, "ELECCION(" + str(maximo) + ")")
