@@ -98,6 +98,29 @@ class TestFallosMidElection(unittest.TestCase):
         lider = anillo.iniciar_eleccion(1, nodo_que_falla=4, paso_de_falla=2)
         self.assertEqual(lider, 6)
         self.assertFalse(red.nodos[4].activo)
+class TestCasosLimite(unittest.TestCase):
+
+    def test_red_de_dos_nodos(self):
+        red = Red()
+        red.crear_red_completa(2)
+        bully = Bully(red)
+        lider = bully.iniciar_eleccion(1)
+        self.assertEqual(lider, 2)
+
+    def test_iniciador_ya_es_el_maximo(self):
+        red = Red()
+        red.crear_red_completa(5)
+        bully = Bully(red)
+        lider = bully.iniciar_eleccion(5)
+        self.assertEqual(lider, 5)
+        self.assertEqual(bully.contador.total_mensajes, 4)
+
+    def test_anillo_iniciador_ya_es_el_maximo(self):
+        red = Red()
+        red.crear_red_completa(5)
+        anillo = Anillo(red, [1, 2, 3, 4, 5])
+        lider = anillo.iniciar_eleccion(5)
+        self.assertEqual(lider, 5)
 
 if __name__ == "__main__":
     unittest.main()
